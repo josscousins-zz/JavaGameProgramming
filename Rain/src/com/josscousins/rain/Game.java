@@ -1,6 +1,7 @@
 package com.josscousins.rain;
 
 import com.josscousins.rain.Graphics.Screen;
+import com.josscousins.rain.input.Keyboard;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,27 +17,30 @@ public class Game extends Canvas implements Runnable{
     public static final int HEIGHT = (WIDTH/ 16) * 9; // ~168
     public static final int SCALE = 3;
 
-    private Thread thread;
-
     //Game State variables
     private boolean running =false;
+    private Thread thread;
 
-    //screen
+    //Screen
     private Screen screen;
+    private BufferedImage image = new BufferedImage(WIDTH,HEIGHT,BufferedImage.TYPE_INT_RGB);
+    private int[] pixels = (    (DataBufferInt) image.getRaster().getDataBuffer()   ).getData()    ;
 
     //Game Window
     private JFrame frame;
 
-    private BufferedImage image = new BufferedImage(WIDTH,HEIGHT,BufferedImage.TYPE_INT_RGB);
-    private int[] pixels = (    (DataBufferInt) image.getRaster().getDataBuffer()   ).getData()    ;
+    //Keyboard input
+    private Keyboard keyboard;
 
     public Game(){
         final Dimension SIZE = new Dimension(WIDTH * SCALE, HEIGHT * SCALE);
         setPreferredSize(SIZE);
 
         screen = new Screen(WIDTH,HEIGHT);
-
         frame = new JFrame();
+
+        keyboard = new Keyboard();
+        addKeyListener(keyboard);
     }
 
     public static void main(String[] args) {
@@ -98,7 +102,15 @@ public class Game extends Canvas implements Runnable{
         }
         stop();
     }
+
+    int x =0,y =0;
     public void update(){
+
+        keyboard.update();
+        if(keyboard.up) y--;
+        if(keyboard.down) y++;
+        if(keyboard.left) x--;
+        if(keyboard.right) x++;
 
     }
     public void render(){
@@ -109,7 +121,7 @@ public class Game extends Canvas implements Runnable{
         }
 
         screen.clear();
-        screen.render();
+        screen.render(x,y);
 
         for (int i = 0; i < pixels.length; i++) {
             pixels[i] = screen.pixels[i];

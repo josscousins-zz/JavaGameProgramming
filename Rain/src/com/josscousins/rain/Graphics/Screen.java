@@ -9,7 +9,7 @@
             16 =   10000 (base 2)
              4 =     100 (base 2)
        64 >> 4 = 0000100 // shift all 1's 4 places right
-    x & y copies only were a and b have 1's
+    x & y : copies only were a and b have 1's
             12 & 48 = 1100 & 101100 -> 001100
  */
 package com.josscousins.rain.Graphics;
@@ -22,7 +22,7 @@ public class Screen {
     private int width;
     private int height;
     public int[] pixels;
-    public int[] tiles = new int[MAP_SIZE * MAP_SIZE]; //could also do MAP_SIZE << 6
+    public int[] tiles = new int[MAP_SIZE * MAP_SIZE]; //could also do MAP_SIZE << 6 since (<<6) == (*64)
 
     private Random r = new Random();
 
@@ -42,19 +42,20 @@ public class Screen {
             pixels[i] = 0;
         }
     }
-    public void render(){
+    public void render(int xOffset, int yOffset){
 
         for (int y = 0; y < height ; y++) {
-            int yy = y;
-            if(yy < 0 || yy >= height) break;
+            int yy = y +yOffset;
+            //if(yy < 0 || yy >= height) break;
             for (int x = 0; x < width; x++) {
-                int xx = x;
-                if(xx < 0 || xx >= width) break;
+                int xx = x +xOffset;
+               // if(xx < 0 || xx >= width) break;
 
                 /*NO WRAP AROUND int tileIndex = (x >> 4) + (y >> 4) * MAP_SIZE ;   //16 = tile size 64 = map width */
-                /*WRAP AROUND */ int tileIndex = ((x >> 4) & (MAP_SIZE -1)) + ((y >> 4) & (MAP_SIZE -1)) * MAP_SIZE ;   //16 = tile size 64 = map width */
+                /*WRAP AROUND */ int tileIndex = ((xx >> 4) & (MAP_SIZE -1)) + ((yy >> 4)  & (MAP_SIZE -1)) * MAP_SIZE ;   //16 = tile size 64 = map width */
 
-                pixels[xx + yy * width] = tiles[tileIndex];
+                //pixels[x + y * width] = tiles[tileIndex];
+                pixels[x + y * width] = Sprite.grass1.pixels[(x&15) + (y&15) * Sprite.grass1.SIZE];
             }
         }
     }
