@@ -2,6 +2,8 @@ package com.josscousins.rain;
 
 import com.josscousins.rain.Graphics.Screen;
 import com.josscousins.rain.input.Keyboard;
+import com.josscousins.rain.level.Level;
+import com.josscousins.rain.level.RandomLevel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,6 +22,9 @@ public class Game extends Canvas implements Runnable{
     //Game State variables
     private boolean running =false;
     private Thread thread;
+
+    //Level
+    private Level level;
 
     //Screen
     private Screen screen;
@@ -40,6 +45,8 @@ public class Game extends Canvas implements Runnable{
         frame = new JFrame();
 
         keyboard = new Keyboard();
+        level = new RandomLevel(64,64);
+
         addKeyListener(keyboard);
     }
 
@@ -78,6 +85,7 @@ public class Game extends Canvas implements Runnable{
         int frames =0;
         int updates = 0;
 
+        requestFocus();
         while(running){
             long timeNow = System.nanoTime();
             delta += (timeNow - lastTime) /nanoSeconds; //~2610 /166,666,666
@@ -121,7 +129,9 @@ public class Game extends Canvas implements Runnable{
         }
 
         screen.clear();
-        screen.render(x,y);
+        level.render(x,y,screen);
+        //screen.render(x,y);
+
 
         for (int i = 0; i < pixels.length; i++) {
             pixels[i] = screen.pixels[i];

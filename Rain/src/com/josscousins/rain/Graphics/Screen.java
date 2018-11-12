@@ -14,15 +14,19 @@
  */
 package com.josscousins.rain.Graphics;
 
+import com.josscousins.rain.level.tile.Tile;
+
 import java.util.Random;
 
 public class Screen {
     private final int MAP_SIZE = 8;
    // private final int TILE_SIZE = 16;
-    private int width;
-    private int height;
+    public int width;
+    public int height;
     public int[] pixels;
     public int[] tiles = new int[MAP_SIZE * MAP_SIZE]; //could also do MAP_SIZE << 6 since (<<6) == (*64)
+
+    public int xOffset, yOffset;
 
     private Random r = new Random();
 
@@ -42,22 +46,36 @@ public class Screen {
             pixels[i] = 0;
         }
     }
-    public void render(int xOffset, int yOffset){
-
+/*    public void render(int xOffset, int yOffset){
         for (int y = 0; y < height ; y++) {
-            int yy = y +yOffset;
-            //if(yy < 0 || yy >= height) break;
+            int yPixel = y + yOffset;
+            if(yPixel < 0 || yPixel >= height) continue;
             for (int x = 0; x < width; x++) {
-                int xx = x +xOffset;
-               // if(xx < 0 || xx >= width) break;
-
-                /*NO WRAP AROUND int tileIndex = (x >> 4) + (y >> 4) * MAP_SIZE ;   //16 = tile size 64 = map width */
-                /*WRAP AROUND */ int tileIndex = ((xx >> 4) & (MAP_SIZE -1)) + ((yy >> 4)  & (MAP_SIZE -1)) * MAP_SIZE ;   //16 = tile size 64 = map width */
-
-                //pixels[x + y * width] = tiles[tileIndex];
-                pixels[x + y * width] = Sprite.grass1.pixels[(x&15) + (y&15) * Sprite.grass1.SIZE];
+                int xPixel = x + xOffset;
+                if(xPixel < 0 || xPixel >= width) continue;
+                pixels[(x + xOffset) + (y + yOffset) * width] = Sprite.grass.pixels[(x&15) + (y&15) * Sprite.grass.SIZE];
+            }
+        }
+    }*/
+    public void renderTile(int xp, int yp, Tile tile){
+        xp -=xOffset;
+        yp -=yOffset;
+        for (int y = 0; y < tile.sprite.SIZE; y++) {
+            //ya == absolute Y
+            int ya = y + yp;
+            for (int x = 0; x < tile.sprite.SIZE; x++) {
+                //xa == absolute X
+                int xa = x + xp;
+                if(xa < 0 || xa >= width ||ya < 0 || ya >=height)break;
+                pixels[xa+ya*width] = tile.sprite.pixels[x+y * tile.sprite.SIZE];
             }
         }
     }
+
+    public void setOffset(int xOffset, int yOffset){
+        this.xOffset = xOffset;
+        this.yOffset = yOffset;
+    }
+
 
 }
