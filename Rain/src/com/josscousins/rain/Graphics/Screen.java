@@ -14,6 +14,7 @@
  */
 package com.josscousins.rain.Graphics;
 
+import com.josscousins.rain.entity.Mob.Player;
 import com.josscousins.rain.level.tile.Tile;
 
 import java.util.Random;
@@ -46,17 +47,7 @@ public class Screen {
             pixels[i] = 0;
         }
     }
-/*    public void render(int xOffset, int yOffset){
-        for (int y = 0; y < height ; y++) {
-            int yPixel = y + yOffset;
-            if(yPixel < 0 || yPixel >= height) continue;
-            for (int x = 0; x < width; x++) {
-                int xPixel = x + xOffset;
-                if(xPixel < 0 || xPixel >= width) continue;
-                pixels[(x + xOffset) + (y + yOffset) * width] = Sprite.grass.pixels[(x&15) + (y&15) * Sprite.grass.SIZE];
-            }
-        }
-    }*/
+
     public void renderTile(int xp, int yp, Tile tile){
         xp -=xOffset;
         yp -=yOffset;
@@ -66,8 +57,26 @@ public class Screen {
             for (int x = 0; x < tile.sprite.SIZE; x++) {
                 //xa == absolute X
                 int xa = x + xp;
-                if(xa < 0 || xa >= width ||ya < 0 || ya >=height)break;
+                if(xa < - tile.sprite.SIZE || xa >= width ||ya < 0 || ya >=height)break;
+                if(xa <=0) xa=0;
                 pixels[xa+ya*width] = tile.sprite.pixels[x+y * tile.sprite.SIZE];
+            }
+        }
+    }
+
+    public void renderPlayer(int xp, int yp, Sprite sprite){
+        xp -=xOffset;
+        yp -=yOffset;
+        for (int y = 0; y < 32; y++) {
+            //ya == absolute Y
+            int ya = y + yp;
+            for (int x = 0; x < 32; x++) {
+                //xa == absolute X
+                int xa = x + xp;
+                if(xa < - 32 || xa >= width ||ya < 0 || ya >=height)break;
+                if(xa <=0) xa=0;
+                int col = sprite.pixels[x+y * 32];
+                if(col != 0xffff00ff) pixels[xa+ya*width] = col;
             }
         }
     }

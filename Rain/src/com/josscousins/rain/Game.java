@@ -1,6 +1,7 @@
 package com.josscousins.rain;
 
 import com.josscousins.rain.Graphics.Screen;
+import com.josscousins.rain.entity.Mob.Player;
 import com.josscousins.rain.input.Keyboard;
 import com.josscousins.rain.level.Level;
 import com.josscousins.rain.level.RandomLevel;
@@ -25,6 +26,7 @@ public class Game extends Canvas implements Runnable{
 
     //Level
     private Level level;
+    private Player player;
 
     //Screen
     private Screen screen;
@@ -46,7 +48,7 @@ public class Game extends Canvas implements Runnable{
 
         keyboard = new Keyboard();
         level = new RandomLevel(64,64);
-
+        player = new Player(keyboard);
         addKeyListener(keyboard);
     }
 
@@ -111,14 +113,11 @@ public class Game extends Canvas implements Runnable{
         stop();
     }
 
-    int x =0,y =0;
     public void update(){
 
         keyboard.update();
-        if(keyboard.up) y--;
-        if(keyboard.down) y++;
-        if(keyboard.left) x--;
-        if(keyboard.right) x++;
+        player.update();
+
 
     }
     public void render(){
@@ -129,8 +128,10 @@ public class Game extends Canvas implements Runnable{
         }
 
         screen.clear();
-        level.render(x,y,screen);
-        //screen.render(x,y);
+        int xScroll = player.x - screen.width /2;
+        int yScroll = player.y - screen.height /2;
+        level.render(xScroll,yScroll,screen);
+        player.render(screen);
 
 
         for (int i = 0; i < pixels.length; i++) {
