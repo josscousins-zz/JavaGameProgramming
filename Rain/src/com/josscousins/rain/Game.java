@@ -4,7 +4,8 @@ import com.josscousins.rain.Graphics.Screen;
 import com.josscousins.rain.entity.Mob.Player;
 import com.josscousins.rain.input.Keyboard;
 import com.josscousins.rain.level.Level;
-import com.josscousins.rain.level.RandomLevel;
+//import com.josscousins.rain.level.RandomLevel;
+import com.josscousins.rain.level.SpawnLevel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -47,7 +48,7 @@ public class Game extends Canvas implements Runnable{
         frame = new JFrame();
 
         keyboard = new Keyboard();
-        level = new RandomLevel(64,64);
+        level = new SpawnLevel("/textures/level.png");
         player = new Player(keyboard);
         addKeyListener(keyboard);
     }
